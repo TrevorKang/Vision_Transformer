@@ -12,7 +12,7 @@ class EarlyStopping:
         self.patience = patience
         self.counter = 0
         self.early_stop = False
-        self.val_acc_max = 0.55
+        self.val_acc_max = 0.25
         self.update = False
 
     def check(self, val_acc):
