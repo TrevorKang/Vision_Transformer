@@ -31,7 +31,6 @@ def train(model, trainloader, optimizer, criterion, device, epoch):
     for batch_idx, (data, target) in enumerate(trainloader):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
-        # torch.autograd.set_detect_anomaly(True)
         output = model(data)
         loss = criterion(output, target)/len(output)
         loss.backward()
@@ -77,14 +76,14 @@ def run(args):
         transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
     ])
     # TODO: adjust folder
-    dataset = datasets.CIFAR10('/adl_ws23/ex1_ViT/train_set', download=True, train=True, transform=transform)
+    dataset = datasets.CIFAR10('/adl_ws23/Vision_Transformer/train_set', download=True, train=True, transform=transform)
     trainset, valset = torch.utils.data.random_split(dataset, [int(len(dataset)*0.9), len(dataset)-int(len(dataset)*0.9)])
     trainloader = DataLoader(trainset, batch_size=64, shuffle=True)
     valloader = DataLoader(valset, batch_size=64, shuffle=False)
 
     # Download and load the test data
     # TODO: adjust folder
-    testset = datasets.CIFAR10('/adl_ws23/ex1_ViT/test_set', download=True, train=False, transform=transform)
+    testset = datasets.CIFAR10('/adl_ws23/Vision_Transformer/test_set', download=True, train=False, transform=transform)
     testloader = DataLoader(testset, batch_size=64, shuffle=True)
 
     # Build a feed-forward network
@@ -118,20 +117,20 @@ def run(args):
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
     # TODO: add early stop and save model
     # load model
-    # epoch_n = 17
-    # ckp = torch.load('checkpoints_vit/checkpoint_{:03d}.ckp'.format(epoch_n), 'cuda')
-    # print("Load model from previous training...")
-    # model.load_state_dict(ckp['state_dict'])
+    epoch_n = 5
+    ckp = torch.load('checkpoints/cvit/checkpoint_{:03d}.ckp'.format(epoch_n), 'cuda')
+    print("Load model from previous training...")
+    model.load_state_dict(ckp['state_dict'])
     for epoch in range(1, args.epochs + 1):
         if es.early_stop is not True:
             train(model, trainloader, optimizer, criterion, device, epoch)
             test(model, device, valloader, criterion, set="Validation")
-            # if es.counter == 0:
-            #     torch.save({'state_dict': model.state_dict()}, 'checkpoints_vit/checkpoint_{:03d}.ckp'.format(epoch))
-            #     print("Saved model...")
+            if es.counter == 0:
+                torch.save({'state_dict': model.state_dict()}, 'checkpoints/cvit/checkpoint_{:03d}.ckp'.format(epoch))
+                print("Saved model...")
         else:
             break
-    torch.save({'state_dict': model.state_dict()}, 'checkpoints_vit/checkpoint_{:03d}.ckp'.format(epoch))
+    # torch.save({'state_dict': model.state_dict()}, 'checkpoints/cvit/checkpoint_{:03d}.ckp'.format(epoch))
     test(model, device, testloader, criterion)
 
 
