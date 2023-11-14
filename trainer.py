@@ -5,7 +5,7 @@ from torchvision import datasets, transforms, models
 from torch.utils.data import DataLoader
 from torch import optim
 
-from my_models import ViT, CrossViT   # rename the skeleton file for your implementation / comment before testing for ResNet
+from my_models import ViT, CrossViT  # rename the skeleton file for your implementation / comment before testing for ResNet
 from early_stopping import EarlyStopping
 
 es = EarlyStopping(patience=10)
@@ -68,8 +68,9 @@ def run(args):
     # TODO: add augmentation
     transform = transforms.Compose([
         transforms.ToTensor(),
-        transforms.RandomVerticalFlip(),
-        transforms.RandomHorizontalFlip(),
+
+        # transforms.RandomVerticalFlip(),
+        # transforms.RandomHorizontalFlip(),
         # transforms.RandomCrop(padding=4, size=32),
         # transforms.RandomRotation(degrees=90),
         # ImageNet mean/std values should also fit okayish for CIFAR
@@ -117,7 +118,7 @@ def run(args):
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
     # TODO: add early stop and save model
     # load model
-    epoch_n = 5
+    epoch_n = 81
     ckp = torch.load('checkpoints/cvit/checkpoint_{:03d}.ckp'.format(epoch_n), 'cuda')
     print("Load model from previous training...")
     model.load_state_dict(ckp['state_dict'])
@@ -129,8 +130,9 @@ def run(args):
                 torch.save({'state_dict': model.state_dict()}, 'checkpoints/cvit/checkpoint_{:03d}.ckp'.format(epoch))
                 print("Saved model...")
         else:
+
+            torch.save({'state_dict': model.state_dict()}, 'checkpoints/cvit/checkpoint_{:03d}.ckp'.format(epoch))
             break
-    # torch.save({'state_dict': model.state_dict()}, 'checkpoints/cvit/checkpoint_{:03d}.ckp'.format(epoch))
     test(model, device, testloader, criterion)
 
 

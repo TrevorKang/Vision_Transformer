@@ -233,7 +233,7 @@ class CrossTransformer(nn.Module):
         for crs_lg, crs_sm in self.layers:
             # cross attention of large branch
             sm2lg = crs_lg(lg_cls, context=sm_patch_tokens)
-            lg_cls = sm2lg + lg_cls  # skip links
+            lg_cls = sm2lg + lg_cls  # skip links: do not use +=, otherwise the gradient will be wrong
 
             # cross attention of small branch
             lg2sm = crs_sm(sm_cls, context=lg_patch_tokens)
@@ -284,6 +284,7 @@ class MultiScaleEncoder(nn.Module):
             sm_tokens, lg_tokens = cross_attn(sm_tokens, lg_tokens)
 
         return sm_tokens, lg_tokens
+
 
 # CrossViT (could actually also be used in ViT)
 # helper function that makes the embedding from patches
