@@ -25,8 +25,8 @@ ViT with self attention and CVit with cross attention
     d_k is the dimension of the key matrix
     
   
-  CrossViT with cross attention considerd the class token and patch token from both small and big tokens 
-  It can fuse the global and local information better then vanilla ViT.
+  CrossViT with cross attention considered the class token and patch token from both small and big tokens 
+  It can fuse the global and local information better than vanilla ViT.
 
   The general structure of CrossViT is as follows:
     
