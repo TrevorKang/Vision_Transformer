@@ -3,7 +3,7 @@
 ViT with self attention and CVit with cross attention
 
   # trainer.py
-  excute the basic training and testing process
+  execute the basic training and testing process
 
   use the early_stopping and data augmentation with torch.transform()
   
