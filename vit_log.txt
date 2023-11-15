@@ -1,0 +1,23 @@
+Nov 9, Xingjian
+
+These things are changed: 
+
+1. ProjectInOut.forward(... *kwargs)
+
+	**kwargs missd a *, so I added this star, is's my typo, Sorry ;(
+
+2. CrossTransformer
+
+	I modified the constructor so that it follows the paper
+
+	In the forward(),  two branch's weights are inversed, I've rewrited them with better expression
+
+	Added kv_include_self=True since it's cross attention
+
+3. Attention
+	If we only do 1 and 2, sometimes it works, but the projection after attention has the second dimension != 1
+	this is not true, it should be in the shape of the corresponding class token
+		e.g. if large_cls_token = (16, 1, 128), then proj == (16, 1, 128), not (16, 17, 128)
+	reason:
+		in forward(), the Q should be self.w_q(x) rather than self.w_q(context)
+
